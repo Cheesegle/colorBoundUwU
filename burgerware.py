@@ -77,7 +77,7 @@ while(True):
                 pos = win32api.GetCursorPos()
                 x = int(pos[0] + numx)
                 y = int(pos[1] + numy)
-                win32api.SetCursorPos((x,y))
+                # win32api.SetCursorPos((x,y))
                 # mouse.click()
 
     #visual debug
