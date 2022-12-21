@@ -9,8 +9,11 @@ import math
 import ctypes
 import mouse
 
-vidcap = cv.VideoCapture('test.mp4')
-out = cv.VideoWriter('output.mp4', -1, 60.0, (1920, 1080))
+resw = 1920
+resh = 1080
+fps = 60
+vidcap = cv.VideoCapture('input.mp4')
+out = cv.VideoWriter('output.mp4', -1, fps, (resw, resh))
 framen = 1
 
 while True:
@@ -49,7 +52,7 @@ while True:
             x2 = x + round(w/2)
             cv.rectangle(frame, (x, y), (x+w, y+h), (0,0,255), 2)
             cv.circle(frame, (x2,y2), radius=5, color=(0, 255, 0), thickness=-1)
-            cv.line(frame, (round(1920/2), round(1080/2)), (x2, y2), color=(255, 0, 0), thickness=2) 
+            cv.line(frame, (round(resw/2), round(resh/2)), (x2, y2), color=(255, 0, 0), thickness=2) 
 
     #visual debug
     # cv.imshow(visname, frame)
