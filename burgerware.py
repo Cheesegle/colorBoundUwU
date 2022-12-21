@@ -9,37 +9,12 @@ import math
 import ctypes
 import mouse
 
-toplist, winlist = [], []
-def enum_cb(hwnd, results):
-    winlist.append((hwnd, win32gui.GetWindowText(hwnd)))
-win32gui.EnumWindows(enum_cb, toplist)
+vidcap = cv2.VideoCapture('big_buck_bunny_720p_5mb.mp4')
+success,image = vidcap.read()
 
-krunker = [(hwnd, title) for hwnd, title in winlist if 'krunker' in title.lower()]
-# just grab the hwnd for first window matching krunker
-krunker = krunker[0]
-hwnd = krunker[0]
-
-win32gui.SetForegroundWindow(hwnd)
-bbox = win32gui.GetWindowRect(hwnd)
-
-wsize = 400
-
-bbox_list = list(bbox)
-bbox_list[0] = int((1920 / 2) - wsize)
-bbox_list[1] = int((1080 / 2) - wsize)
-bbox_list[2] = int((1920 / 2) + wsize)
-bbox_list[3] = int((1080 / 2) + wsize)
-
-bbox = tuple(bbox_list)
-
-camera = dxcam.create(output_color="BGRA")
-camera.start(target_fps=144, region=bbox)
-
-loop_time = time()
-while(True):
-
-    # get an updated image of the game
-    frame = np.array(camera.get_latest_frame())[...,:3]
+while success:
+    # get an image from the video
+    frame = np.array(image)[...,:3]
 
     visname = 'BurgerWare'
 
@@ -47,8 +22,8 @@ while(True):
 
     #detect players
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    lower = np.array([7, 150, 190])
-    upper = np.array([11, 200, 220])
+    lower = np.array([9, 130, 180])
+    upper = np.array([12, 150, 190])
     mask = cv.inRange(hsv, lower, upper)
     sel_color = cv.bitwise_and(frame, frame, mask=mask)
 
@@ -81,8 +56,8 @@ while(True):
                 # mouse.click()
 
     #visual debug
-    # cv.imshow(visname, frame)
-    # cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, 1)
+    cv.imshow(visname, frame)
+    cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, 1)
 
     # debug the loop rate
     print('FPS {}'.format(1 / (time() - loop_time)))
