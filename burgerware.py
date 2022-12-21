@@ -9,11 +9,16 @@ import math
 import ctypes
 import mouse
 
-vidcap = cv2.VideoCapture('big_buck_bunny_720p_5mb.mp4')
-success,image = vidcap.read()
+vidcap = cv.VideoCapture('test.mp4')
+out = cv.VideoWriter('output.mp4', -1, 60.0, (1920, 1080))
+framen = 1
 
-while success:
+while True:
+    print("rendering frame: ", framen)
+    framen += 1
+
     # get an image from the video
+    success,image = vidcap.read()
     frame = np.array(image)[...,:3]
 
     visname = 'BurgerWare'
@@ -44,24 +49,13 @@ while success:
             x2 = x + round(w/2)
             cv.rectangle(frame, (x, y), (x+w, y+h), (0,0,255), 2)
             cv.circle(frame, (x2,y2), radius=5, color=(0, 255, 0), thickness=-1)
-            if y != wsize and x != wsize:
-                numx = x2 - wsize
-                numy = y2 - wsize
-                
-
-                pos = win32api.GetCursorPos()
-                x = int(pos[0] + numx)
-                y = int(pos[1] + numy)
-                # win32api.SetCursorPos((x,y))
-                # mouse.click()
+            cv.line(frame, (round(1920/2), round(1080/2)), (x2, y2), color=(255, 0, 0), thickness=2) 
 
     #visual debug
-    cv.imshow(visname, frame)
-    cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, 1)
+    # cv.imshow(visname, frame)
 
-    # debug the loop rate
-    print('FPS {}'.format(1 / (time() - loop_time)))
-    loop_time = time()
+    #write to output
+    out.write(frame)
 
     # press 'q' with the output window focused to exit.
     # waits 1 ms every loop to process key presses
