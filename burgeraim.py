@@ -38,8 +38,8 @@ with mss.mss() as sct:
 
             # detect players
             hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-            lower = np.array([hsv_color[0] - 1, hsv_color[1] - 1, hsv_color[2] - 1])
-            upper = np.array([hsv_color[0] + 1, hsv_color[1] + 1, hsv_color[2] + 1])
+            lower = np.array([hsv_color[0] - 3, hsv_color[1] - 3, hsv_color[2] - 3])
+            upper = np.array([hsv_color[0] + 3, hsv_color[1] + 3, hsv_color[2] + 3])
             mask = cv.inRange(hsv, lower, upper)
             sel_color = cv.bitwise_and(frame, frame, mask=mask)
 
