@@ -13,7 +13,7 @@ t = int((1920 / 2) + wsize)
 d = int((1080 / 2) + wsize)
 
 camera = dxcam.create(output_color="BGRA")
-camera.start(target_fps=360, region=(l, w, t, d))
+camera.start(target_fps=120, region=(l, w, t, d))
 
 loop_time = time()
 while True:
@@ -47,22 +47,21 @@ while True:
     if len(contours) != 0:
         c = max(contours, key=cv.contourArea)
         x, y, w, h = cv.boundingRect(c)
-        if w > 1 and h > 1:
-            y2 = y + round(h / 2)
-            x2 = x + round(w / 2)
-            cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            cv.circle(frame, (x2, y2), radius=5, color=(0, 255, 0), thickness=-1)
+        y2 = y + round(h / 2)
+        x2 = x + round(w / 2)
+        cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv.circle(frame, (x2, y2), radius=5, color=(0, 255, 0), thickness=-1)
 
-            # Calculate the new mouse position
-            numx = x2 - wsize
-            numy = y2 - wsize
+        # Calculate the new mouse position
+        numx = x2 - wsize
+        numy = y2 - wsize
 
-            pos = win32api.GetCursorPos()
-            x = int(pos[0] + numx)
-            y = int(pos[1] + numy)
+        pos = win32api.GetCursorPos()
+        x = int(pos[0] + numx)
+        y = int(pos[1] + numy)
 
-            # Move the mouse
-            win32api.SetCursorPos((x, y))
+        # Move the mouse
+        win32api.SetCursorPos((x, y))
 
     # visual debug
     # cv.imshow(visname, frame)
