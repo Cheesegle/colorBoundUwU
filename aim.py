@@ -1,26 +1,24 @@
 import cv2 as cv
 import numpy as np
+import os
+from time import time
 import dxcam
-import mouse
-import math
 import win32api
 
-resw = 1920
-resh = 1080
-fps = 60
+wsize = 400
 
-region_left = int(resw / 2 - 300)
-region_top = int(resh / 2 - 300)
-region_right = int(resw / 2 + 300)
-region_bottom = int(resh / 2 + 300)
+l = int((1920 / 2) - wsize)
+w = int((1080 / 2) - wsize)
+t = int((1920 / 2) + wsize)
+d = int((1080 / 2) + wsize)
 
 camera = dxcam.create(output_color="BGRA")
-camera.start(target_fps=60, region=(region_left, region_top, region_right, region_bottom))
+camera.start(target_fps=144, region=(l, w, t, d))
 
+loop_time = time()
 while True:
-    # get an image from the video
-    image = camera.get_latest_frame()
-    frame = np.array(image)[..., :3]
+    # get an updated image of the game
+    frame = np.array(camera.get_latest_frame())[...,:3]
 
     visname = 'BurgerWare'
 
@@ -54,22 +52,21 @@ while True:
             x2 = x + round(w / 2)
             cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
             cv.circle(frame, (x2, y2), radius=5, color=(0, 255, 0), thickness=-1)
-            cv.line(frame, (round(resw / 2), round(resh / 2)), (x2, y2), color=(255, 0, 0), thickness=2)
 
-            # Calculate the angle and distance to the target
-            angle = math.atan2(y2 - resh / 2, x2 - resw / 2)
-            distance = math.sqrt((y2 - resh / 2) ** 2 + (x2 - resw / 2) ** 2)
+            # Calculate the new mouse position
+            numx = x2 - wsize
+            numy = y2 - wsize
 
-            # Adjust mouse position based on the calculated angle and distance
-            sensitivity = 5  # You can adjust this value
-            new_x = int(win32api.GetSystemMetrics(0) / 2 + sensitivity * distance * math.cos(angle))
-            new_y = int(win32api.GetSystemMetrics(1) / 2 + sensitivity * distance * math.sin(angle))
+            pos = win32api.GetCursorPos()
+            x = int(pos[0] + numx)
+            y = int(pos[1] + numy)
 
             # Move the mouse
-            mouse.move(new_x, new_y, absolute=True, duration=0.1)
+            win32api.SetCursorPos((x, y))
 
     # visual debug
-    cv.imshow(visname, frame)
+    # cv.imshow(visname, frame)
+    # cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, 1)
 
     # press 'q' with the output window focused to exit.
     # waits 1 ms every loop to process key presses
