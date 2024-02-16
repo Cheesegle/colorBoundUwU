@@ -4,7 +4,7 @@ from time import time, sleep
 import win32api
 import mss
 
-wsize = 400
+wsize = 300
 
 l = int((1920 / 2) - wsize)
 w = int((1080 / 2) - wsize)
@@ -64,10 +64,15 @@ with mss.mss() as sct:
         # cv.imshow(visname, frame)
         # cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, 1)
 
+        # Calculate and display FPS
+        # fps = 1 / (time() - loop_time)
+        # print(f'FPS: {fps:.2f}', end='\r')
+        # loop_time = time()
+
         # press 'q' with the output window focused to exit.
         # waits 1 ms every loop to process key presses
         if cv.waitKey(1) == ord('q'):
             cv.destroyAllWindows()
             break
 
-    print('Done.')
+    print('\nDone.')
