@@ -49,8 +49,8 @@ while True:
         x, y, w, h = cv.boundingRect(c)
         y2 = y + round(h / 2)
         x2 = x + round(w / 2)
-        cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-        cv.circle(frame, (x2, y2), radius=5, color=(0, 255, 0), thickness=-1)
+        # cv.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        # cv.circle(frame, (x2, y2), radius=5, color=(0, 255, 0), thickness=-1)
 
         # Calculate the new mouse position
         numx = x2 - wsize
