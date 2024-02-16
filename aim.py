@@ -13,7 +13,7 @@ t = int((1920 / 2) + wsize)
 d = int((1080 / 2) + wsize)
 
 camera = dxcam.create(output_color="BGRA")
-camera.start(target_fps=144, region=(l, w, t, d))
+camera.start(target_fps=360, region=(l, w, t, d))
 
 loop_time = time()
 while True:
@@ -30,8 +30,8 @@ while True:
 
     # detect players
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    lower = np.array([hsv_color[0] - 5, hsv_color[1] - 20, hsv_color[2] - 20])
-    upper = np.array([hsv_color[0] + 5, hsv_color[1] + 20, hsv_color[2] + 20])
+    lower = np.array([hsv_color[0] - 3, hsv_color[1] - 3, hsv_color[2] - 3])
+    upper = np.array([hsv_color[0] + 3, hsv_color[1] + 3, hsv_color[2] + 3])
     mask = cv.inRange(hsv, lower, upper)
     sel_color = cv.bitwise_and(frame, frame, mask=mask)
 
