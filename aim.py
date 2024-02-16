@@ -9,11 +9,10 @@ resw = 1920
 resh = 1080
 fps = 60
 
-# Specify the region you want to capture (300x300 centered on the screen)
-region_left = int(resw / 2 - 150)
-region_top = int(resh / 2 - 150)
-region_right = int(resw / 2 + 150)
-region_bottom = int(resh / 2 + 150)
+region_left = int(resw / 2 - 300)
+region_top = int(resh / 2 - 300)
+region_right = int(resw / 2 + 300)
+region_bottom = int(resh / 2 + 300)
 
 camera = dxcam.create(output_color="BGRA")
 camera.start(target_fps=60, region=(region_left, region_top, region_right, region_bottom))
@@ -28,7 +27,7 @@ while True:
     frame = frame.astype(np.uint8)
 
     # Convert RGB color to HSV
-    rgb_color = (191,113,73)  # Example: Green color in RGB
+    rgb_color = (191, 113, 73)  # Example: Green color in RGB
     hsv_color = cv.cvtColor(np.uint8([[rgb_color]]), cv.COLOR_RGB2HSV)[0][0]
 
     # detect players
@@ -71,11 +70,6 @@ while True:
 
     # visual debug
     cv.imshow(visname, frame)
-
-    # Set the window always on top
-    cv.setWindowProperty(visname, cv.WND_PROP_TOPMOST, cv.WINDOW_GUI_NORMAL)
-
-    cv.setWindowProperty("BurgerWare", cv.WND_PROP_FULLSCREEN, cv.WINDOW_FULLSCREEN)
 
     # press 'q' with the output window focused to exit.
     # waits 1 ms every loop to process key presses
