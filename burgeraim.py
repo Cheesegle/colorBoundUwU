@@ -12,19 +12,25 @@ t = int((1920 / 2) + wsize)
 d = int((1080 / 2) + wsize)
 
 # List of RGB colors to aim at
-colors_to_aim = [(191, 113, 73), (146,87,57)]  # Add more colors as needed
+colors_to_aim = [(191, 113, 73), (146, 87, 57)]  # Add more colors as needed
 
 with mss.mss() as sct:
-    monitor = {"left": l, "top": w, "width": t-l, "height": d-w}
+    monitor = {"left": l, "top": w, "width": t - l, "height": d - w}
 
     loop_time = time()
+    smoothing_factor = 0.5  # You can adjust this value for smoother or more responsive movement
+    smoothed_pos = None
+
     while True:
         # get an updated image of the game
-        frame = np.array(sct.grab(monitor))[...,:3]
+        frame = np.array(sct.grab(monitor))[..., :3]
 
         visname = 'BurgerWare'
 
         frame = frame.astype(np.uint8)
+
+        avg_pos = np.zeros(2)
+        num_detected = 0
 
         for rgb_color in colors_to_aim:
             # Convert RGB color to HSV
@@ -52,16 +58,29 @@ with mss.mss() as sct:
                 y2 = y + round(h / 2)
                 x2 = x + round(w / 2)
 
-                # Calculate the new mouse position
-                numx = x2 - wsize
-                numy = y2 - wsize
+                avg_pos[0] += x2
+                avg_pos[1] += y2
+                num_detected += 1
 
-                pos = win32api.GetCursorPos()
-                x = int(pos[0] + numx)
-                y = int(pos[1] + numy)
+        if num_detected > 0:
+            avg_pos /= num_detected
 
-                # Move the mouse
-                win32api.SetCursorPos((x, y))
+            # Apply smoothing
+            if smoothed_pos is None:
+                smoothed_pos = avg_pos
+            else:
+                smoothed_pos = smoothing_factor * avg_pos + (1 - smoothing_factor) * smoothed_pos
+
+            # Calculate the new mouse position
+            numx = smoothed_pos[0] - wsize
+            numy = smoothed_pos[1] - wsize
+
+            pos = win32api.GetCursorPos()
+            x = int(pos[0] + numx)
+            y = int(pos[1] + numy)
+
+            # Move the mouse
+            win32api.SetCursorPos((x, y))
 
         # visual debug
         # cv.imshow(visname, frame)
